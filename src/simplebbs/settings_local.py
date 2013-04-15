@@ -1,4 +1,8 @@
+from mongoengine import connect
+
 from settings_base import *
+
+connect('simplebbs')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
 

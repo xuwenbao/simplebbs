@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="row">
+    <div class="span8">
+        {% block main_section %}{% endblock %}
+    </div>
+    <div class="span3 offset1">
+        {% block right_section %}
+        {% if username %}
+        {% else %}
+        <div class="row box">
+            <p><strong>SimpleBBS</strong></p>
+            <p><small>仿V2ex风格的简单论坛.</small></p>
+            <hr>
+            <p class="text-center">
+                <a href="{% url 'user.create' %}" class="btn">现在注册</a>
+            </p>
+            <p class="text-center">
+                <small>已注册用户请 <a href="">登入</a></small>
+            </p>
+        </div>
+        {% endif %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}

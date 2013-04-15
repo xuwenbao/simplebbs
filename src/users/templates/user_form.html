@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block main_section %}
+<div class="row box">
+    <form action="{% url 'user.create' %}" class="form-horizontal" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+        <legend>注册</legend>
+
+        {% if form.errors %}
+            <div class="alert">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        {% csrf_token %}
+        <div class="control-group">
+            <label class="control-label">{{ form.username.label }}</label>
+            <div class="controls">
+                {{ form.username }}
+                <span class="help-inline">{{ form.username.help_text }}</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">{{ form.password.label }}</label>
+            <div class="controls">
+                {{ form.password }}
+                <span class="help-inline">{{ form.password.help_text }}</span>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">{{ form.email.label }}</label>
+            <div class="controls">
+                {{ form.email }}
+                <span class="help-inline">{{ form.email.help_text }}</span>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn">注册</button>
+        </div>
+        <!--
+        <div class="control-group">
+            <label class="control-label">{{ form.avatar.label }}</label>
+            <div class="controls">
+                {{ form.avatar }}
+            </div>
+        </div>
+        -->
+    </form>
+</div>
+{% endblock %}

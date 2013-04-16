@@ -1,7 +1,31 @@
 {% extends 'layout.html' %}
 
+{% block script %}
+<script type="text/javascript">
+    $(function(){
+        // 如果提示Mesage已显示, 10秒钟后消失.
+        if($('#messages').length > 0){
+            setTimeout(function(){ $('#messages').hide('slow') }, 10000);
+        }
+    });
+</script>
+{% endblock %}
+
 {% block main_section %}
 <div class="row box">
-    
+    <!--
+    {% if messages %}
+    <div id="messages" class="alert">
+        <ul>
+            {% for message in messages %}
+            <li>
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    -->
+    {% include '_messages.html' with messages=messages %}
 </div>
 {% endblock %}

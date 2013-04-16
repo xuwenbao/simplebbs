@@ -23,3 +23,11 @@ class Authenticated(object):
 
 def has_permission():
     pass
+
+
+def login(request, username):
+    request.session['username'] = username
+
+
+def logout(request):
+    request.session['username'] = ''

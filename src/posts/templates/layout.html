@@ -17,7 +17,7 @@
                 <a href="{% url 'user.create' %}" class="btn">现在注册</a>
             </p>
             <p class="text-center">
-                <small>已注册用户请 <a href="">登入</a></small>
+                <small>已注册用户请 <a href="{% url 'user.login' %}">登入</a></small>
             </p>
         </div>
         {% endif %}

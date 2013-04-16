@@ -2,7 +2,7 @@
 
 {% block main_section %}
 <div class="row box">
-    <form action="{% url 'user.create' %}" class="form-horizontal" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %}>
+    <form action="{% url 'user.create' %}" class="form-horizontal" {% if form.is_multipart %}enctype="multipart/form-data"{% endif %} method="POST">
         <legend>注册</legend>
 
         {% if form.errors %}

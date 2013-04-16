@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block main_section %}
+<div class="row box">
+    {% include '_messages.html' with messages=messages %}
+    <form action="{% url 'user.findpwd_check' %}" method="POST" class="form-horizontal">
+        <legend>找回密码</legend>
+        {% csrf_token %}
+        <div class="control-group">
+            <label class="control-label">用户名</label>
+            <div class="controls">
+                <input type="text" name="username" value="{{ username }}">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">电子邮件</label>
+            <div class="controls">
+                <input type="text" name="email" value="{{ email }}">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn">确认</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

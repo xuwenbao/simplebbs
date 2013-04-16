@@ -2,6 +2,7 @@
 """
 此模块的目的是重写Django通用视图的方法,使通用视图支持MongoEngine的Model
 """
+from django.http import HttpResponseRedirect
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from mongoengine import Document, EmbeddedDocument
@@ -52,12 +53,15 @@ class MongoFormMixin(object):
         return self.form_class
 
     def get_form(self, form_class):
-        return form_class(self.request.POST)
+        if self.request.method in ('POST', 'PUT'):
+            return form_class(self.request.POST)
+        else:
+            return form_class()
 
     def form_valid(self, form):
         if not self.object:
             raise ValueError, 'attr object not setted.'
-        return super(MongoFormMixin, self).form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class MongoSingleObjectQuerysetMixin(object):

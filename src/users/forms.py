@@ -3,6 +3,8 @@ import re
 
 from django import forms
 
+from .models import User
+
 
 class UserForm(forms.Form):
 
@@ -17,7 +19,20 @@ class UserForm(forms.Form):
     def clean_username(self):
         username = self.cleaned_data['username']
 
+        # 用户名必须为字母或数字
         m = re.match('[a-zA-Z0-9]+', username)
         if not m:
             raise forms.ValidationError, u'请使用半角的 a-z 或数字 0-9'
+
+        # 用户名不能重复
+        if User.is_username_exist(username):
+            raise forms.ValidationError, u'用户名已存在'
         return username
+
+    def clean_email(self):
+        email = self.cleaned_data['email']
+
+        # email不能重复
+        if User.is_email_exist(email):
+            raise forms.ValidationError, u'该电子邮箱已注册'
+        return email

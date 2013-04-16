@@ -14,7 +14,7 @@ from mongoengine import (
 
 class Comment(EmbeddedDocument):
 
-    # author = ReferenceField('User', reverse_delete_rule=CASCADE)
+    author = ReferenceField('users.User')
     content = StringField(max_length=500, required=True)
     create_time = DateTimeField(default=timezone.now())
 
@@ -27,7 +27,7 @@ class Comment(EmbeddedDocument):
 
 class Post(Document):
 
-    # author = ReferenceField('User', reverse_delete_rule=CASCADE)
+    author = ReferenceField('users.User', reverse_delete_rule=CASCADE)
     title = StringField(max_length=120, required=True)
     content = StringField(max_length=1024, required=True)
     tags = ListField(StringField(max_length=50))

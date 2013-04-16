@@ -2,10 +2,11 @@
 """
 此模块的目的是重写Django通用视图的方法,使通用视图支持MongoEngine的Model
 """
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.core.exceptions import ImproperlyConfigured
 from django.views.generic import CreateView, UpdateView, DetailView, ListView
 from mongoengine import Document, EmbeddedDocument
+from mongoengine.queryset import DoesNotExist
 
 from .mixins import UserMixin
 
@@ -41,6 +42,14 @@ class MongoSingleObjectTemplateResponseMixin(object):
                 self.template_name_suffix
             ))
         return names
+
+    def get_object(self, queryset=None):
+        try:
+            obj = super(MongoSingleObjectTemplateResponseMixin, self).get_object(queryset)
+        except DoesNotExist:
+            raise Http404("No record found matching the query")
+        else:
+            return obj
 
 
 class MongoFormMixin(object):
@@ -93,3 +102,17 @@ class MongoUpdateView(MongoSingleObjectTemplateResponseMixin,
     pass
 
  
+class MongoDetailView(MongoSingleObjectTemplateResponseMixin,
+                       MongoSingleObjectQuerysetMixin,
+                       DetailView):
+
+    def get_context_object_name(self, obj):
+        """
+        Get the name to use for object.
+        """
+        if self.context_object_name:
+            return self.context_object_name
+        elif isinstance(obj, (Document, EmbeddedDocument)):
+            return obj.__object_name__.lower()
+        else:
+            return None

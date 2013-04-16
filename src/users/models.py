@@ -1,3 +1,8 @@
+# coding: utf-8
+import time
+import hashlib
+import datetime
+
 from django.utils import timezone
 from django.conf import settings
 from django.core.mail import send_mail
@@ -55,7 +60,13 @@ class User(Document):
 
     @classmethod
     def create_user(cls, username, password, email):
-        return cls(username=username, password=password, email=email)
+        obj = cls(username=username, password=password, email=email)
+        obj.save()
+        return obj
+
+    @classmethod
+    def get_by_uesrname(cls, username):
+        return cls.objects.get(username=username)
 
     @classmethod
     def check_password(cls, username, password):
@@ -85,3 +96,27 @@ class User(Document):
     def mail_to_user(cls, username, email, subject, message):
         send_mail(subject, message, settings.EMAIL_HOST_USER, [email])
 
+
+class RestToken(Document):
+
+    user = ReferenceField('User', reverse_delete_rule=CASCADE)
+    reset_token = StringField(max_length=100, required=True, unique=True)
+    used = BooleanField(default=False)
+    create_time = DateTimeField(default=timezone.now())
+    expire_time = DateTimeField(default=timezone.now() + datetime.timedelta(days=2))
+
+    __object_name__ = 'RestToken'
+
+    @classmethod
+    def create_resttoken(cls, username):
+        user = User.get_by_uesrname(username)
+        # 用email和当前时间戳生成token
+        token = hashlib.md5('%s%s' % (user.email, int(time.time()))).hexdigest()
+        obj = cls(user=user, reset_token=token)
+        obj.save()
+        return obj
+
+    def use(self):
+        if not self.used:
+            self.used = True
+            self.save()

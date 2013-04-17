@@ -116,3 +116,53 @@ class MongoDetailView(MongoSingleObjectTemplateResponseMixin,
             return obj.__object_name__.lower()
         else:
             return None
+
+
+class MongoListView(ListView):
+    """
+    使用此ListView的Model必须定义__object_name__.
+    """
+
+    def get_context_object_name(self, object_list):
+        """
+        Get the name of the item to be used in the context.
+        """
+        if self.context_object_name:
+            return self.context_object_name
+        elif hasattr(object_list, 'model'):
+            return '%s_list' % object_list.model.__object_name__.lower()
+        else:
+            return None
+
+    def get_queryset(self):
+        """
+        Get the list of items for this view. This must be an iterable, and may
+        be a queryset (in which qs-specific behavior will be enabled).
+        """
+        if self.queryset is not None:
+            queryset = self.queryset
+            if hasattr(queryset, 'clone'):
+                queryset = queryset.clone()
+        elif self.model is not None:
+            queryset = self.model.objects.all()
+        else:
+            raise ImproperlyConfigured("'%s' must define 'queryset' or 'model'"
+                                       % self.__class__.__name__)
+        return queryset
+
+    def get_template_names(self):
+        """
+        Return a list of template names to be used for the request. Must return
+        a list. May not be called if render_to_response is overridden.
+        """
+        if self.template_name:
+            return [self.template_name]
+
+        # If the list is a queryset, we'll invent a template name based on the
+        # app and model name. This name gets put at the end of the template
+        # name list so that user-supplied names override the automatically-
+        # generated ones.
+        names = []
+        if hasattr(self, 'model'):
+            names.append("%s%s.html" % (self.model.__object_name__.lower(), self.template_name_suffix))
+        return names

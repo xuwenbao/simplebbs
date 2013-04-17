@@ -1,0 +1,53 @@
+{% extends 'layout.html' %}
+
+{% block script %}
+<script type="text/javascript">
+    $(function(){
+        // 如果提示Mesage已显示, 10秒钟后消失.
+        if($('#messages').length > 0){
+            setTimeout(function(){ $('#messages').hide('slow') }, 10000);
+        }
+
+        // 提交新主题
+        $('#send').click(function(){
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'post.create' %}",
+                data: $('#postForm').serialize(),
+                dataType: 'json',
+                success: function(data){
+                    // window.location.reload();
+                    $('#includeList').load("{% url 'post.list_incldue' %}");
+                    $('#postForm :input[name=title]').val('');
+                    $('#postForm :input[name=content]').val('');
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    console.log('Serve Error:' + errorThrown);
+                }
+            });
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main_section %}
+<div class="row box">
+    {% include '_messages.html' with messages=messages %}
+    <div id="includeList">
+    {% include '_post_pagination.html' with object_list=object_list paginator=paginator page_obj=page_obj %}
+    </div>
+</div>
+
+{% if username %}
+<div class="row box" style="margin-top: 10px">
+    <form id="postForm" action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="username" value="{{ username }}">
+        <input type="text" name="title" style="display: block;width: 95%">
+        <textarea name="content" id="" cols="20" rows="10" style="display: block;width: 95%"></textarea>
+        <input id="send" type="submit" value="创建新主题" class="btn btn-small">
+    </form>
+</div>
+{% endif %}
+{% endblock %}

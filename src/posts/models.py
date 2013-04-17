@@ -11,6 +11,7 @@ from mongoengine import (
     CASCADE,
 )
 
+from users.models import User
 
 class Comment(EmbeddedDocument):
 
@@ -18,10 +19,9 @@ class Comment(EmbeddedDocument):
     content = StringField(max_length=500, required=True)
     create_time = DateTimeField(default=timezone.now())
 
+    __object_name__ = 'Comment'
     meta = {
         'ordering': ['create_time'],
-        'app_label': 'users',
-        'object_name': 'User',
     }
 
 
@@ -35,8 +35,16 @@ class Post(Document):
     page_views = IntField(default=0)
     create_time = DateTimeField(default=timezone.now())
 
+    __object_name__ = 'Post'
     meta = {
         'ordering': ['-create_time'],
         'app_label': 'users',
         'object_name': 'User',
     }
+
+    @classmethod
+    def create_post(cls, username, title, content):
+        user = User.get_by_uesrname(username)
+        post = cls(user=user, title=title, content=content)
+        post.save()
+        return post

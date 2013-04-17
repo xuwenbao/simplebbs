@@ -75,6 +75,10 @@ class User(Document):
         return False
 
     @classmethod
+    def change_password(cls, username, password):
+        cls.objects(username=username).update_one(set__password=password)
+
+    @classmethod
     def check_email(cls, username, email):
         if cls.objects(username=username, email=email):
             return True

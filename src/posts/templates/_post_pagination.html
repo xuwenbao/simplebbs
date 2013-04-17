@@ -1,0 +1,8 @@
+<table class="table">
+    {% for post in object_list %}
+    <tr>
+        <td>{{ post.title }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% include '_pagination.html' with paginator=paginator page_obj=page_obj %}

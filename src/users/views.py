@@ -84,7 +84,7 @@ class ForgetPwdView(TemplateView):
 
 mail_message = """Hi {username},
 
-我们的系统收到一个请求，说你希望通过电子邮件重新设置你在 V2EX 的密码。你可以点击下面的链接开始重设密码：
+我们的系统收到一个请求，说你希望通过电子邮件重新设置你在 SimpleBBS 的密码。你可以点击下面的链接开始重设密码：
 
 {reset_uri}
 
@@ -140,3 +140,18 @@ class RestPwdView(DetailView):
         obj = super(RestPwdView, self).get_object(queryset)
         obj.use()
         return obj
+
+
+class RestPwdRedirectView(RedirectView):
+    """
+    重设密码校验
+    """
+
+    url = reverse_lazy('user.login')
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        User.change_password(username, password)
+        messages.success(request, u'重设密码成功')
+        return super(RestPwdRedirectView, self).post(request, *args, **kwargs)

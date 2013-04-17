@@ -2,6 +2,25 @@
 
 {% block main_section %}
 <div class="row box">
-    
+    <form action="{% url 'user.resetpwd_check' %}" method="POST" class="form-horizontal">
+        <legend>注册</legend>
+        {% csrf_token %}
+        <input type="hidden" name="username" value="{{object.user.username}}">
+        <div class="control-group">
+            <label class="control-label">新密码</label>
+            <div class="controls">
+                <input type="password" name="password">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label">确认密码</label>
+            <div class="controls">
+                <input type="password" name="confirm_password">
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn">重设密码</button>
+        </div>
+    </form>
 </div>
 {% endblock %}

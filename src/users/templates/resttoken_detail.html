@@ -1,25 +1,87 @@
 {% extends 'layout.html' %}
 
+{% block script %}
+<script type="text/javascript">
+    function show_errormsg(errorMsg, data){
+        $('#errors').append("<div class='alert alert-error' data='" + data + "'>" + errorMsg + "</div>");
+    }
+
+    function clear_errormsgs(data){
+        $('#errors').find(".alert[data='" + data + "']").remove();
+    }
+
+    $(function(){
+        // 重设密码校验
+        $('#resetForm :input').blur(function(){
+            // 验证新密码
+            if($(this).is('#password')){
+                clear_errormsgs('password');
+                if(this.value == '' || this.value.length < 6){
+                    var errorMsg = '请输入至少6位密码';
+                    show_errormsg(errorMsg, 'password');
+                }
+
+                if(this.value.length > 30){
+                    var errorMsg = '请输入少于或等于30位的密码';
+                    show_errormsg(errorMsg, 'password');
+                }
+            }
+            // 验证确认密码
+            if($(this).is('#confirm_password')){
+                clear_errormsgs('confirm_password');
+                if(this.value == '' || this.value.length < 6){
+                    var errorMsg = '请输入至少6位确认密码';
+                    show_errormsg(errorMsg, 'confirm_password');
+                }
+
+                if(this.value.length > 30){
+                    var errorMsg = '请输入少于或等于30位的确认密码';
+                    show_errormsg(errorMsg, 'confirm_password');
+                }
+
+                if(this.value !== $('#password').val()){
+                    var errorMsg = '两次输入的密码不一致';
+                    show_errormsg(errorMsg, 'confirm_password');
+                }
+            }
+        }).keyup(function(){
+           $(this).triggerHandler("blur");
+        }).focus(function(){
+           $(this).triggerHandler("blur");
+        });
+
+        $('#send').click(function(){
+            $('#resetForm :input').trigger('blur');
+            var numError = $('#errors .alert').length;
+            if(numError){
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% block main_section %}
 <div class="row box">
-    <form action="{% url 'user.resetpwd_check' %}" method="POST" class="form-horizontal">
+    <div id="errors"></div>
+    <form id="resetForm" action="{% url 'user.resetpwd_check' %}" method="POST" class="form-horizontal">
         <legend>注册</legend>
         {% csrf_token %}
         <input type="hidden" name="username" value="{{object.user.username}}">
         <div class="control-group">
             <label class="control-label">新密码</label>
             <div class="controls">
-                <input type="password" name="password">
+                <input id="password" type="password" name="password">
             </div>
         </div>
         <div class="control-group">
             <label class="control-label">确认密码</label>
             <div class="controls">
-                <input type="password" name="confirm_password">
+                <input id="confirm_password" type="password" name="confirm_password">
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit" class="btn">重设密码</button>
+            <button id="send" type="submit" class="btn">重设密码</button>
         </div>
     </form>
 </div>

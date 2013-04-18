@@ -45,7 +45,9 @@ class User(Document):
 
     __object_name__ = 'User'
     __acl__ = [
+        (Allow, EveryOne, 'commom'),
         (Allow, EveryOne, 'add'),
+        (Allow, Authenticated, 'logout'),
         (Allow, Owner, 'change'),
         (Allow, 'group:admin', 'delete'),
     ]
@@ -124,3 +126,10 @@ class RestToken(Document):
         if not self.used:
             self.used = True
             self.save()
+
+
+def groupfinder(request):
+    username = request.session.get('username')
+    if not username:
+        return []
+    return username, User.get_by_username(username).groups

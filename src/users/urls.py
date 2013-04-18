@@ -1,23 +1,12 @@
 from django.conf.urls import patterns, include, url
 
-from .views import (
-    UserCreateView,
-    LoginView,
-    LoginRedirectView,
-    LogoutRedirectView,
-    ForgetPwdView,
-    ForgetPwdRedirectView,
-    RestPwdView,
-    RestPwdRedirectView,
-)
-
-urlpatterns = patterns('',
-    url(r'^create/$', UserCreateView.as_view(), name='user.create'),
-    url(r'^login/$', LoginView.as_view(), name='user.login'),
-    url(r'^login/check/$', LoginRedirectView.as_view(), name='user.login_check'),
-    url(r'^logout/$', LogoutRedirectView.as_view(), name='user.logout'),
-    url(r'^findpwd/$', ForgetPwdView.as_view(), name='user.findpwd'),
-    url(r'^findpwd/check/$', ForgetPwdRedirectView.as_view(), name='user.findpwd_check'),
-    url(r'^reset/check/$', RestPwdRedirectView.as_view(), name='user.resetpwd_check'),
-    url(r'^reset/(?P<slug>\w+)/$', RestPwdView.as_view(), name='user.resetpwd'),
+urlpatterns = patterns('users.views',
+    url(r'^create/$', 'create', name='user.create'),
+    url(r'^login/$', 'login', name='user.login'),
+    url(r'^login/check/$', 'login_check', name='user.login_check'),
+    url(r'^logout/$', 'logout', name='user.logout'),
+    url(r'^findpwd/$', 'findpwd', name='user.findpwd'),
+    url(r'^findpwd/check/$', 'findpwd_check', name='user.findpwd_check'),
+    url(r'^reset/check/$', 'resetpwd_check', name='user.resetpwd_check'),
+    url(r'^reset/(?P<slug>\w+)/$', 'resetpwd', name='user.resetpwd'),
 )

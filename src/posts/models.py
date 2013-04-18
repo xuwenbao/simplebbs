@@ -11,6 +11,13 @@ from mongoengine import (
     CASCADE,
 )
 
+from utils.security import (
+    Allow,
+    Deny,
+    EveryOne,
+    Owner,
+    Authenticated,
+)
 from users.models import User
 
 class Comment(EmbeddedDocument):
@@ -20,9 +27,22 @@ class Comment(EmbeddedDocument):
     create_time = DateTimeField(default=timezone.now())
 
     __object_name__ = 'Comment'
+    __acl__ = [
+        (Allow, EveryOne, 'view'),
+        (Allow, Authenticated, 'add'),
+        (Allow, Owner, 'change'),
+        (Allow, Owner, 'delete'),
+    ]
     meta = {
         'ordering': ['create_time'],
     }
+
+    @classmethod
+    def create_comment(cls, post_id, username, content):
+        post = Post.get_by_id(post_id)
+        user = User.get_by_uesrname(username)
+        comment = cls(author=user, content=content)
+        Post.objects(id=post_id).update_one(push__comments=comment)
 
 
 class Post(Document):
@@ -36,15 +56,23 @@ class Post(Document):
     create_time = DateTimeField(default=timezone.now())
 
     __object_name__ = 'Post'
+    __acl__ = [
+        (Allow, EveryOne, 'view'),
+        (Allow, Authenticated, 'add'),
+        (Allow, Owner, 'change'),
+        (Allow, Owner, 'delete'),
+    ]
     meta = {
         'ordering': ['-create_time'],
-        'app_label': 'users',
-        'object_name': 'User',
     }
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.objects.get(id=id)
 
     @classmethod
     def create_post(cls, username, title, content):
         user = User.get_by_uesrname(username)
-        post = cls(user=user, title=title, content=content)
+        post = cls(author=user, title=title, content=content)
         post.save()
         return post

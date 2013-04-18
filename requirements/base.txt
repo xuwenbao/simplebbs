@@ -1,0 +1,6 @@
+Django==1.5.1
+Pygments==1.6
+bpython==0.12
+django-braces==1.0.0
+mongoengine==0.7.9
+pymongo==2.5

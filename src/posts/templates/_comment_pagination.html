@@ -1,0 +1,17 @@
+<table class="table">
+    {% for comment in object_list %}
+    <tr>
+        <td>
+            <p>
+                {{ comment.content }}
+            </p>
+            <p>{{ comment.author.username }}, 发布与{{ comment.create_time }}</p>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td>暂无回复</td>
+    </tr>
+    {% endfor %}
+</table>
+{% include '_pagination.html' with paginator=paginator page_obj=page_obj %}

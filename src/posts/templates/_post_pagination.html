@@ -1,7 +1,18 @@
 <table class="table">
     {% for post in object_list %}
     <tr>
-        <td>{{ post.title }}</td>
+        <td>
+            <p>
+                <a href="{% url 'comment.list' post_id=post.id %}">
+                    {{ post.title }}
+                </a>
+            </p>
+            <p>{{ post.author.username }}, 发布与{{ post.create_time }}</p>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td>目前没有任何主题,来创建第一个主题吧.</td>
     </tr>
     {% endfor %}
 </table>

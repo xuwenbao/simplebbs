@@ -11,26 +11,14 @@
     }
 
     $(function(){
-        // 如果提示Mesage已显示, 10秒钟后消失.
-        if($('#messages').length > 0){
-            setTimeout(function(){ $('#messages').hide('slow') }, 10000);
-        }
 
         // 提交主题校验
-        $('#postForm :input').blur(function(){
-            // 验证标题
-            if($(this).is('#title')){
-                clear_errormsgs('title');
-                if(this.value == ''){
-                    var errorMsg = '请输入主题标题';
-                    show_errormsg(errorMsg, 'title');
-                }
-            }
+        $('#commentForm :input').blur(function(){
             // 验证内容
             if($(this).is('#content')){
                 clear_errormsgs('content');
                 if(this.value == ''){
-                    var errorMsg = '请输入请输入主题内容';
+                    var errorMsg = '请输入请输入回复内容';
                     show_errormsg(errorMsg, 'content');
                 }
             }
@@ -40,9 +28,9 @@
            $(this).triggerHandler("blur");
         });
 
-        // 提交新主题
+        // 提交新回复
         $('#send').click(function(){
-            $('#postForm :input').trigger('blur');
+            $('#commentForm :input').trigger('blur');
             var numError = $('#errors .alert').length;
             if(numError){
                 return false;
@@ -50,14 +38,13 @@
 
             $.ajax({
                 type: 'POST',
-                url: "{% url 'post.create' %}",
-                data: $('#postForm').serialize(),
+                url: "{% url 'comment.create' %}",
+                data: $('#commentForm').serialize(),
                 dataType: 'json',
                 success: function(data){
                     // window.location.reload();
-                    $('#includeList').load("{% url 'post.list_incldue' %}");
-                    $('#postForm :input[name=title]').val('');
-                    $('#postForm :input[name=content]').val('');
+                    $('#includeList').load("{% url 'comment.list_include' post_id=post.id %}?page=last");
+                    $('#commentForm :input[name=content]').val('');
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
                     console.log('Serve Error:' + errorThrown);
@@ -71,22 +58,28 @@
 
 {% block main_section %}
 <div class="row box">
+    <p>{{ post.title }}</p>
+    <p>{{ post.content }}</p>
+</div>
+
+<div class="row box" style="margin-top: 10px">
     {% include '_messages.html' with messages=messages %}
     <div id="includeList">
-    {% include '_post_pagination.html' with object_list=object_list paginator=paginator page_obj=page_obj %}
+    {% include '_comment_pagination.html' with object_list=object_list paginator=paginator page_obj=page_obj %}
     </div>
 </div>
 
 {% if username %}
 <div class="row box" style="margin-top: 10px">
     <div id="errors"></div>
-    <form id="postForm" action="" method="POST">
+    <form id="commentForm" action="" method="POST">
         {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ post.id }}">
         <input type="hidden" name="username" value="{{ username }}">
-        <input id="title" type="text" name="title" style="display: block;width: 95%">
-        <textarea id="content" name="content" id="" cols="20" rows="10" style="display: block;width: 95%"></textarea>
-        <input id="send" type="submit" value="创建新主题" class="btn btn-small">
+        <textarea id="content" name="content" id="" cols="20" rows="5" style="display: block;width: 95%"></textarea>
+        <input id="send" type="submit" value="回复主题" class="btn btn-small">
     </form>
 </div>
 {% endif %}
+
 {% endblock %}

@@ -4,7 +4,15 @@ from django.contrib import messages
 from django.views.generic import TemplateView, RedirectView
 from django.core.urlresolvers import reverse, reverse_lazy
 
-from utils.security import login, logout
+from utils.security import (
+    login, 
+    logout,
+    permission_view,
+    Allow,
+    EveryOne,
+    Owner,
+    Authenticated,
+)
 from utils.views import MongoCreateView as CreateView
 from utils.views import MongoUpdateView as UpdateView
 from utils.views import MongoDetailView as DetailView
@@ -155,3 +163,13 @@ class RestPwdRedirectView(RedirectView):
         User.change_password(username, password)
         messages.success(request, u'重设密码成功')
         return super(RestPwdRedirectView, self).post(request, *args, **kwargs)
+
+
+create = permission_view(UserCreateView.as_view(), permission='add', model=User)
+login = permission_view(LoginView.as_view(), permission='commom', model=User)
+login_check = permission_view(LoginRedirectView.as_view(), permission='commom', model=User)
+logout = permission_view(LogoutRedirectView.as_view(), permission='logout', model=User)
+findpwd = permission_view(ForgetPwdView.as_view(), permission='commom', model=User)
+findpwd_check = permission_view(ForgetPwdRedirectView.as_view(), permission='commom', model=User)
+resetpwd = permission_view(RestPwdView.as_view(), permission='commom', model=User)
+resetpwd_check = permission_view(RestPwdRedirectView.as_view(), permission='commom', model=User)

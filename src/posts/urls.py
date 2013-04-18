@@ -1,11 +1,9 @@
 from django.conf.urls import patterns, include, url
 
-from .views import (
-    PostListView,
-    PostCreateView,
-) 
-
-urlpatterns = patterns('',
-    url(r'^create/$', PostCreateView.as_view(), name='post.create'),
-    url(r'^list/include/$', PostListView.as_view(), {'render_type': 'include'}, name='post.list_incldue'),
+urlpatterns = patterns('posts.views',
+    url(r'^create/$', 'post_create', name='post.create'),
+    url(r'^list/include/$', 'post_list', {'render_type': 'include'}, name='post.list_incldue'),
+    url(r'^detail/(?P<post_id>\w+)/$', 'comment_list', name='comment.list'),
+    url(r'^detail/(?P<post_id>\w+)/include/$', 'comment_list', {'render_type': 'include'}, name='comment.list_include'),
+    url(r'^comment/create/$', 'comment_create', name='comment.create'),
 )

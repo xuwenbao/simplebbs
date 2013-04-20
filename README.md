@@ -27,7 +27,7 @@ Class Views([src/utils/views.py](./src/utils/views.py))
 ACL权限管理
 --------
 
-为需要权限管理的任何类设置一个**\_\_acl\_\_**属性,如:  
+为需要权限管理的任何类设置一个 **\_\_acl\_\_** 属性,如:  
 ```python
 from utils.security import (
     Allow,
@@ -46,6 +46,19 @@ class MyDocumnet(object):
     ]
 ```  
 新增一个Django Middleware: [users.middlewares.PermissionMiddleware](./src/users/middlewares.py)  
+```python
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'users.middlewares.PermissionMiddleware',
+)
+```  
+  
 为视图函数增加一个装饰器,即可实现权限管理  
 ```python
 from utils.security import permission_view

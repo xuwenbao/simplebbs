@@ -66,3 +66,18 @@ from utils.security import permission_view
 
 post_list = permission_view(PostListView.as_view(), permission='view', model=Post)
 ```  
+
+
+Model Permission Mixin([PermissionMixin](./src/utils/mixins.py))
+--------
+
+使用Model类继承PermissionMixin  
+```python
+class Post(PermissionMixin, Document):
+    pass
+```  
+
+model实例权限判断:
+```python
+post.has_perm(permission, user_groups, username)
+```  

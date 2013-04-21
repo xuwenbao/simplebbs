@@ -7,7 +7,12 @@
                     {{ post.title }}
                 </a>
             </p>
-            <p>{{ post.author.username }}, 发布与{{ post.create_time }}</p>
+            <p>
+                <span class="label label-info">{{ post.author.username }}</span> 
+                发布与{{ post.create_time|date:"Ymd H:i:s" }}, 
+                回复<span class="badge">{{ post.comments|length }}</span>
+                {% if post.comments %}, 最后回复来自于<span class="label">{{ post.last_comment.author.username }}</span>{% endif %}
+            </p>
         </td>
     </tr>
     {% empty %}

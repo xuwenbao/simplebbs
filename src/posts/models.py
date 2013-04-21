@@ -7,6 +7,7 @@ from mongoengine import (
     StringField,
     DateTimeField,
     ReferenceField,
+    SortedListField,
     EmbeddedDocumentField,
     CASCADE,
 )
@@ -25,7 +26,7 @@ class Comment(EmbeddedDocument):
 
     author = ReferenceField('users.User')
     content = StringField(max_length=500, required=True)
-    create_time = DateTimeField(default=timezone.now())
+    create_time = DateTimeField(default=timezone.now)
 
     __object_name__ = 'Comment'
     __acl__ = [
@@ -52,9 +53,9 @@ class Post(PermissionMixin, Document):
     title = StringField(max_length=120, required=True)
     content = StringField(max_length=1024, required=True)
     tags = ListField(StringField(max_length=50))
-    comments = ListField(EmbeddedDocumentField(Comment))
+    comments = SortedListField(EmbeddedDocumentField(Comment))
     page_views = IntField(default=0)
-    create_time = DateTimeField(default=timezone.now())
+    create_time = DateTimeField(default=timezone.now)
 
     __object_name__ = 'Post'
     __acl__ = [
@@ -80,3 +81,7 @@ class Post(PermissionMixin, Document):
 
     def is_owner(self, username):
         return self.author.username == username
+
+    @property
+    def last_comment(self):
+        return self.comments[-1]

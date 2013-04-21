@@ -33,7 +33,8 @@ class UserCreateView(CreateView):
         self.object = user = User.create_user(username=form.cleaned_data['username'],
             password=form.cleaned_data['password'],
             email=form.cleaned_data['email'])
-        login(self.request, user.username)
+        # login(self.request, user.username)
+        self.request.session['username'] = user.username
         messages.success(self.request, u'注册成功.')
         return super(UserCreateView, self).form_valid(form)
 
@@ -54,7 +55,8 @@ class LoginRedirectView(RedirectView):
         username = self.request.POST['username']
         password = self.request.POST['password']
         if User.check_password(username, password):
-            login(request, username)
+            # login(request, username)
+            self.request.session['username'] = username
             self.url = reverse('post.list')
             messages.success(request, u'登录成功')
         else:
@@ -71,7 +73,8 @@ class LogoutRedirectView(RedirectView):
     url = reverse_lazy('post.list')
 
     def post(self, request, *args, **kwargs):
-        logout(request)
+        # logout(request)
+        self.request.session['username'] = ''
         return super(LogoutRedirectView, self).post(request, *args, **kwargs)
 
 

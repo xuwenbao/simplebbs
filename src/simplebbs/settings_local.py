@@ -5,6 +5,7 @@ from settings_base import *
 connect('simplebbs')
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.file'
+#SESSION_ENGINE = 'mongoengine.django.sessions'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'

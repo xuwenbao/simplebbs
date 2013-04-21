@@ -4,7 +4,7 @@
 """
 from django.http import HttpResponseRedirect, Http404
 from django.core.exceptions import ImproperlyConfigured
-from django.views.generic import CreateView, UpdateView, DetailView, ListView
+from django.views.generic import CreateView, UpdateView, DeleteView, DetailView, ListView
 from mongoengine import Document, EmbeddedDocument
 from mongoengine.queryset import DoesNotExist
 
@@ -99,6 +99,12 @@ class MongoUpdateView(MongoSingleObjectTemplateResponseMixin,
                       MongoFormMixin,
                       MongoSingleObjectQuerysetMixin,
                       UpdateView):
+    pass
+
+
+class MongoDeleteView(MongoSingleObjectTemplateResponseMixin,
+                      MongoSingleObjectQuerysetMixin,
+                      DeleteView):
     pass
 
  

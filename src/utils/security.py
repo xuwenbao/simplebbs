@@ -8,7 +8,7 @@ class Allow(object):
     def validate(cls, group, user_groups, model=None, instance=None, username=None):
         if isinstance(group, basestring):
             return group in user_groups
-        return group.validate(group, user_groups, model=None, instance=None, username=None)
+        return group.validate(group, user_groups, model=model, instance=instance, username=username)
 
 
 class Deny(object):
@@ -53,11 +53,16 @@ def permission_view(view, permission, model, slug=None, slug_kwarg=None):
 
 
 def has_permission(permission, user_groups, model=None, instance=None, username=None):
-    if not hasattr(model, '__acl__'):
+    if (not hasattr(model, '__acl__')) and (not hasattr(instance, '__acl__')):
         return True
-    acl = model.__acl__
+
+    if hasattr(model, '__acl__'):
+        acl = model.__acl__
+    else:
+        acl = instance.__acl__
+        
     opeator, group, perm = filter(lambda l: l[2] == permission, acl)[0]
-    return opeator.validate(group, user_groups, model=model, instance=instance, username=None)
+    return opeator.validate(group, user_groups, model=model, instance=instance, username=username)
 
 
 def login(request, username):

@@ -18,6 +18,7 @@ from utils.security import (
     Owner,
     Authenticated,
 )
+from utils.mixins import PermissionMixin
 from users.models import User
 
 class Comment(EmbeddedDocument):
@@ -45,7 +46,7 @@ class Comment(EmbeddedDocument):
         Post.objects(id=post_id).update_one(push__comments=comment)
 
 
-class Post(Document):
+class Post(PermissionMixin, Document):
 
     author = ReferenceField('users.User', reverse_delete_rule=CASCADE)
     title = StringField(max_length=120, required=True)
@@ -76,3 +77,6 @@ class Post(Document):
         post = cls(author=user, title=title, content=content)
         post.save()
         return post
+
+    def is_owner(self, username):
+        return self.author.username == username

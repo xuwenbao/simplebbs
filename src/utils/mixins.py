@@ -1,5 +1,5 @@
 # coding: utf-8
-
+from utils.security import has_permission
 
 class UserMixin(object):
     """
@@ -11,3 +11,14 @@ class UserMixin(object):
         username = self.request.session.get('username')
         context.update({'username': username})
         return context
+
+
+class PermissionMixin(object):
+    """
+    Model PermissionMixin
+    """
+    def has_perm(self, permission, user_groups, username):
+        return has_permission(permission, user_groups=user_groups, instance=self, username=username)
+
+    def is_owner(self, username):
+        raise NotImplementedError

@@ -132,4 +132,4 @@ def groupfinder(request):
     username = request.session.get('username')
     if not username:
         return []
-    return username, User.get_by_username(username).groups
+    return User.get_by_uesrname(username).groups

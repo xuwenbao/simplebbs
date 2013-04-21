@@ -48,6 +48,8 @@
                 return false;
             }
 
+            $('#send').hide();
+            $('#loading').show();
             $.ajax({
                 type: 'POST',
                 url: "{% url 'post.create' %}",
@@ -58,9 +60,13 @@
                     $('#includeList').load("{% url 'post.list_incldue' %}");
                     $('#postForm :input[name=title]').val('');
                     $('#postForm :input[name=content]').val('');
+                    $('#send').show();
+                    $('#loading').hide();
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
                     console.log('Serve Error:' + errorThrown);
+                    $('#send').show();
+                    $('#loading').hide();
                 }
             });
             return false;
@@ -86,6 +92,7 @@
         <input id="title" type="text" name="title" style="display: block;width: 95%">
         <textarea id="content" name="content" id="" cols="20" rows="10" style="display: block;width: 95%"></textarea>
         <input id="send" type="submit" value="创建新主题" class="btn btn-small">
+        <img id="loading" src="{{ STATIC_URL }}img/loading.gif" alt="" style="display: none;">
     </form>
 </div>
 {% endif %}

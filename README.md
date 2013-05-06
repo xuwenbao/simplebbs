@@ -8,7 +8,7 @@ Simplebbs(仿V2ex论坛)
 
 简介
 ---------
-Simplebbs,仿照V2ex实现完整论坛功能.您可以点击此地址访问: [63.223.73.122](http://63.223.73.122)  
+Simplebbs,仿照V2ex实现完整论坛功能. 
 + 使用Django 1.5
 + 数据存储使用Mongodb, ORM使用[mongoengine](http://mongoengine.org/)
 + 重写Django Class View,适用于mongoengine快速开发
